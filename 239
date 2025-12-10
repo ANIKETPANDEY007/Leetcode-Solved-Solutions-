@@ -1,0 +1,79 @@
+// Method-1 Time limit Exceeded as the time complexity is 
+// O(n*k)
+
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length ;
+        int[] ans = new int[n-k+1] ;
+        int z = 0 ;
+        for(int i=0;i<n-k+1;i++){
+            int max = Integer.MIN_VALUE ;
+            for(int j=i;j<k+i;j++){
+                max = Math.max(max,nums[j]) ;
+            }
+            ans[z++] = max ;
+        }
+        return ans ;
+    }
+}
+
+//Method - 2 Almost correct but at last test case it time complexity exceeded.
+
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length ;
+        int[] ans = new int[n-k+1] ;
+        int z = 0 ;
+        Stack<Integer> st = new Stack<>() ;
+        int[] nge = new int[n] ;
+        st.push(n-1) ;
+        nge[n-1] = n ; // -1 nhi rakhni hai
+        for(int i =n-2;i>=0;i--){
+            while(st.size()>0 && nums[i]>nums[st.peek()]) st.pop();
+            if(st.size()==0) nge[i] = n ;
+            else nge[i] = st.peek() ;
+            st.push(i) ;
+        }
+        for(int i=0;i<n-k+1;i++){
+            int j=i ;
+            int max = nums[j] ;
+            while(j<i+k){
+                max = nums[j] ;
+                j=nge(j) ;
+            }
+            ans[z++] = max ;
+        }
+        return ans ;
+    }
+}
+
+// Method-3 Minnor changes on method 2 but it gives a great impact .
+
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length ;
+        int[] ans = new int[n-k+1] ;
+        int z = 0 ;
+        Stack<Integer> st = new Stack<>() ;
+        int[] nge = new int[n] ;
+        st.push(n-1) ;
+        nge[n-1] = n ; // -1 nhi rakhni hai
+        for(int i =n-2;i>=0;i--){
+            while(st.size()>0 && nums[i]>nums[st.peek()]) st.pop();
+            if(st.size()==0) nge[i] = n ;
+            else nge[i] = st.peek() ;
+            st.push(i) ;
+        }
+        int j=0 ;
+        for(int i=0;i<n-k+1;i++){
+            if(j>=i+k) j=i ; // agar wo window se bahar nikal gya to use window ke ander lao.
+            int max = nums[j] ;
+            while(j<i+k){
+                max = nums[j] ;
+                j = nge[j] ;
+            }
+            ans[z++] = max ;
+        }
+        return ans ;
+    }
+}
